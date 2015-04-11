@@ -25,7 +25,7 @@ int try_login(char* username, char* password, website* ws) {
 
   	if (curl_handle = curl_easy_init())
   	{ 
-  		//First call in order to get cookies
+
 	    if(DEBUG)
 	      curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 1);
 	    else
@@ -54,6 +54,8 @@ int try_login(char* username, char* password, website* ws) {
 			}
 	    }
 
+	    buffer_in_file("yo", chunk.memory);
+
 	    //Crafting POST/GET data
 		data = easy_snprintf(ws->data, username, password, token);
 		if(data == NULL)
@@ -62,7 +64,7 @@ int try_login(char* username, char* password, website* ws) {
 			printf("\n [DEBUG] {%s} data = %s\n", ws->name, data); 
 
 		//Next URL to get is the ACTION one
-		curl_easy_setopt(curl_handle, CURLOPT_URL, ws->action);
+		//curl_easy_setopt(curl_handle, CURLOPT_URL, ws->action);
 
 	    if (ws->method == POST)
    			curl_easy_setopt(curl_handle, CURLOPT_POSTFIELDS, data);
