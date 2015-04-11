@@ -50,15 +50,15 @@ int easy_match(char *strRegex, char *buffer)
     regfree (&preg);
     if (match == 0)
     {
-      if (DEBUG)
-        printf("match !\n");
+      /*if (DEBUG)
+        printf("match !\n");*/
 
       return 1;
     }
     else if (match == REG_NOMATCH)
     {
-      if (DEBUG)
-        printf("no match !\n");
+      /*if (DEBUG)
+        printf("no match !\n");*/
 
       return 0;  
     }

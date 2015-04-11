@@ -3,8 +3,8 @@
 #include <string.h>
 
 #define POST 1
-#define GET 0
-#define DEBUG 1
+#define GET 2
+#define DEBUG 0
 
 
 //Structure used to try and connect to a website

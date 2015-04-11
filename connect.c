@@ -11,7 +11,7 @@
 int try_login(char* username, char* password, website* ws) {
 	//Vars
 	int success;
-	char *data, token[100];
+	char *data, token[100], *newURLpattern;
 	struct memoryStruct chunk;
   	CURL *curl_handle;
 	
@@ -35,7 +35,7 @@ int try_login(char* username, char* password, website* ws) {
 	    curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "Mozilla/5.0");
 	    curl_easy_setopt(curl_handle, CURLOPT_AUTOREFERER, 1 );
 	    curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1 );
-	    curl_easy_setopt(curl_handle, CURLOPT_COOKIEFILE, "");
+	    curl_easy_setopt(curl_handle, CURLOPT_COOKIEFILE, "cookie");
 	    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
     	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
 
@@ -54,17 +54,29 @@ int try_login(char* username, char* password, website* ws) {
 			}
 	    }
 
-	    buffer_in_file("yo", chunk.memory);
-
 	    //Crafting POST/GET data
 		data = easy_snprintf(ws->data, username, password, token);
+
 		if(data == NULL)
 			printf("\n ERROR : Couldn't make a string for POST or GET data \n");
 		if(DEBUG)
 			printf("\n [DEBUG] {%s} data = %s\n", ws->name, data); 
 
-		//Next URL to get is the ACTION one
-		//curl_easy_setopt(curl_handle, CURLOPT_URL, ws->action);
+		//Changing URL if GET
+		if (ws->method == GET)
+		{
+			newURLpattern = easy_snprintf("%s?%s", ws->action, data, NULL); //BAD !!
+			ws->action = easy_snprintf(newURLpattern, username, password, token);
+		}
+
+
+
+
+
+		//Next URL to get is the ACTION one /!\ PAS BIEN
+		if (ws->regex_token == NULL)
+			curl_easy_setopt(curl_handle, CURLOPT_URL, ws->action);
+
 
 	    if (ws->method == POST)
    			curl_easy_setopt(curl_handle, CURLOPT_POSTFIELDS, data);
